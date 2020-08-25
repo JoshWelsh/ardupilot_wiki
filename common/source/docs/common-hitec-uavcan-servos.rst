@@ -60,45 +60,91 @@ Hitec UAVCAN Servo Breakout Board
     Powering servos via the AutoPilot's CAN ports is not supported.  The power demands the servo can place on its power source greatly exceed the power supplied to the autopilot.  This is no different than isolating power from the autopilot's servo rail, and care must be taken to follow this recommendation in to UAVCAN Servos.  
 
 In an effort to make integration easier, Hitec has developed these breakout boards that have solder tabs for a power source, such as a BEC or 2S LiPo, as well as two JST-GH connectors for connecting the breakout boards to the autopilot as well as sharing the bus with other peripherals.  
-   .. image:: ../../../images/hitec-servo-breakouts.jpg
+   .. image:: ../../../images/hitec-uavcan-servos-breakout1.JPEG
+       :width: 450px
+       :alt: UAVCAN Servo Breakout Board Prototype
+
+
+   .. image:: ../../../images/hitec-uavcan-servos-breakoutandautopilot.JPEG
+       :width: 450px
 
 Servo Firmware Update Procedure
 ===============================
 1.	Connect the servo to the DPC-CAN device as well as servo power.  Connect the DPC-CAN device via USB to your Windows computer.  Note the COM port associated with the DPC-CAN.
+
+   .. image:: ../../../images/hitec-uavcan-servos-DPC-CAN-servo-power.JPEG
+       :width: 450px
+
 2.	Open the DPC-CAN Update tool, select the appropriate COM port, and press [Open].  You should see the text box populate with the DPC-CAN-V34 version as noted below:
+
+   .. image:: ../../../images/hitec-uavcan-servos-fwupdate1.jpg
+       :width: 450px
+
 3.	Press [Load Patch] and browse to the update file and then click [Open] once you have the file selected.:
+
+   .. image:: ../../../images/hitec-uavcan-servos-fwupdate2.jpg
+       :width: 450px
+
 4.	With the patch selected, you can now press [Erase App]
+
+   .. image:: ../../../images/hitec-uavcan-servos-fwupdate3.jpg
+       :width: 450px
+
 5.	With the original firmware erased, you now click the [Download] button to begin the downloading of the firmware from your computer to the Servo
-6.	With a successful firmware install, the only thing remaining now is to press the [Go App] button.  I do not know what this button does, but the OEM instructions say to press it.  Press the button!
-7.	With the [Go App] button pressed, data will begin streaming.  The firmware is now operational on the servo.  Congrats!
+
+   .. image:: ../../../images/hitec-uavcan-servos-fwupdate4.jpg
+       :width: 450px
+
+6.	With a successful firmware install, the only thing remaining now is to press the [Go App] button.
+
+   .. image:: ../../../images/hitec-uavcan-servos-fwupdate5.jpg
+       :width: 450px
+
+7.	With the [Go App] button pressed, data will begin streaming.  The firmware is now operational on the servo.  You can move on to Servo Configuration below.
+
+   .. image:: ../../../images/hitec-uavcan-servos-fwupdate6.jpg
+       :width: 450px
 
 Servo Configuration
 ===================
 1.	Connect the servo to the DPC-CAN device as well as servo power.  Connect the DPC-CAN device via USB to your Windows computer.  Note the COM port associated with the DPC-CAN.
 
    .. image:: ../../../images/hitec-uavcan-servos-config1.png
+       :width: 450px
 
 2.	With the correct COM port selected, press [Open] and verify the DPC-CAN-VER text field populates with the correct data.  Assuming it does, press the [Auto Scan] button to find the servo 
 
    .. image:: ../../../images/hitec-uavcan-servos-config2.png
+       :width: 450px
 
 3.	In the “SERVO Configuration” area in the top right section of the app, press [All] to select all the check boxes on that tab, and press the [READ] button to read those values from the servo in to the app
-4.	Next we’re going to enter some configurations for this servo.  Let’s assume I want this servo to be “Servo 2” in ArduPilot.  Let’s also assume ArduPilot is on the bus as Node ID 10.  We’ll also configure data streaming at 50Hz.
-5.	The next thing we’ll want to change is how far the servo travels for a given input command.  By default, some of these Hitec UAVCAN servos will travel as far as -150 degrees all the way to +150 degrees for a total travel of 300 degrees.  For my application, I want a 90-degree full-travel with 45 degrees on each side of zero.  
+4.	Next we’re going to enter some configurations for this servo.  Let’s assume that this servo will be “Servo 2” in ArduPilot.  Let’s also assume ArduPilot is on the bus as Node ID 10, which is ArduPilot's default UAVCAN configuration.  These instructions also assume you want a data stream rate of 50Hz but you can change this to suit your requirements. 
+-    Check the checkbox for CAN/Node ID, enter "10" in the text field, and press [SET] next to it
+-    Check the checkbox for SERVO ID, enter "2" in the text field (if you are configuring for a different servo number, this is where you set that value), and press [SET] next to it
+-    check the checkbox for Stream Mode, select the pull down to enable streaming, and press the [SET] button next to it
+-    check the checkbox for Stream Time[ms] and enter 20 (you can set this to whatever value works for your system, 20ms is 50hz logging rate), and press [SET] next to it
+-    press [Save]
+   .. image:: ../../images/hitec-uavcan-servos-config2b.png
+       :width: 450px
+
+5.  The next thing you'll want to change is how far the servo travels for a given input command.  By default, some of these Hitec UAVCAN servos will travel as far as -150 degrees all the way to +150 degrees for a total travel of 300 degrees.  For most ArduPilot-related applications, a 90-degree full-travel with 45 degrees on each side of zero will be the standard requirement.  
 
 -   First step is to update the following two fields to -45.00 and 45.00 
 
    .. image:: ../../../images/hitec-uavcan-servos-config3.png
+       :width: 450px
 
 -   Press that section’s [Left] button to swing the servo to its “Min” value and note the number it displays, in this case 6144
--   Next I’ll press the [Right] button and note the value it displays, in this case 10240 
+-   Next press the [Right] button and note the value it displays, in this case 10240 
 
    .. image:: ../../../images/hitec-uavcan-servos-config4.png
+       :width: 450px
 
 -   In the “Servo Configuration” section, select the “Mode” tab and enter those values for the “POSITION MAX_LIMIT” and “POSITION MIN_LIMIT” fields, press each of their corresponding [SET] buttons, press [SAVE] and finally reboot the servo by pressing the [SERVO RESET] (Reminder, it probably just says [SERVO] on your screen like above)
--   When the servo reboots, use the left/right buttons under the word "Test" to command unitless values of -1.000 and +1.000 to validate that those values are giving -45 and +45 degrees of servo travel
+-   When the servo reboots, use the left/right buttons under the word "Test" to command unitless values of -1.000 and +1.000 to validate that those values are giving -45 and +45 degrees of servo travel.  Using these left/right buttons simulate ArduPilot sending full-swing commands in unitless values of -1 to +1
 
    .. image:: ../../../images/hitec-uavcan-servos-config6.png
+       :width: 450px
 
 ArduPilot Configuration for UAVCAN Servos
 =========================================
@@ -140,10 +186,16 @@ Depending on the rest of your configuration, you may be able to configure the pl
 Log Analysis
 ============
 Since we configured the servo to stream data at 50Hz, ArduPilot will be able to see this data and will log it at the stream rate you’ve configured.  To view this data, open your favorite dataflash viewer, open the log, and browse to CSRV:
+ 
 
-.. image:: ../../../images/hitec-uavcan-servos-csrv.jpg
+   .. image:: ../../../images/hitec-uavcan-servos-csrv.jpg
 
 
 Here is an example of RCOU.C2 (SERVO2’s PWM Value) mapped against CSRV[2].Pos
- 
+   .. image:: ../../../images/hitec-uavcan-servos-ardulog1.png
+       :width: 450px
+
 Here is another sample where CSRV[2].Pos is plotted against CSRV[2].Force to show how randomly providing resistance to the servo while moving it using FBWA is logged:
+   .. image:: ../../../images/hitec-uavcan-servos-ardulog2.png
+       :width: 450px
+
