@@ -118,7 +118,7 @@ Servo Configuration
        :width: 450px
 
 3.	In the “SERVO Configuration” area in the top right section of the app, press [All] to select all the check boxes on that tab, and press the [READ] button to read those values from the servo in to the app
-4.	Next we’re going to enter some configurations for this servo.  Let’s assume that this servo will be “Servo 2” in ArduPilot.  Let’s also assume ArduPilot is on the bus as Node ID 10, which is ArduPilot's default UAVCAN configuration.  These instructions also assume you want a data stream rate of 50Hz but you can change this to suit your requirements. 
+4.	The next step is to enter some configurations for this servo.  For the purposes of this exercise, this documentation assumes this servo will be “Servo 2” in ArduPilot.  It will also assume ArduPilot is on the bus as Node ID 10, which is ArduPilot's default UAVCAN configuration.  These instructions also assume you want a data stream rate of 50Hz but you can change this to suit your requirements. 
 -    Check the checkbox for CAN/Node ID, enter "10" in the text field, and press [SET] next to it
 -    Check the checkbox for SERVO ID, enter "2" in the text field (if you are configuring for a different servo number, this is where you set that value), and press [SET] next to it
 -    check the checkbox for Stream Mode, select the pull down to enable streaming, and press the [SET] button next to it
@@ -127,7 +127,7 @@ Servo Configuration
    .. image:: ../../images/hitec-uavcan-servos-config2b.png
        :width: 450px
 
-5.  The next thing you'll want to change is how far the servo travels for a given input command.  By default, some of these Hitec UAVCAN servos will travel as far as -150 degrees all the way to +150 degrees for a total travel of 300 degrees.  For most ArduPilot-related applications, a 90-degree full-travel with 45 degrees on each side of zero will be the standard requirement.  
+5.  The next thing you'll want to change is how far the servo travels for a given input command.  By default, some of these Hitec UAVCAN servos will travel as far as -150 degrees all the way to +150 degrees for a total travel of 300 degrees.  For most ArduPilot-related applications, a 90-degree full-travel with 45 degrees on each side of zero will be the standard requirement, but you should configure this based on the needs of your system.  
 
 -   First step is to update the following two fields to -45.00 and 45.00 
 
@@ -136,25 +136,27 @@ Servo Configuration
 
 -   Press that section’s [Left] button to swing the servo to its “Min” value and note the number it displays, in this case 6144
 -   Next press the [Right] button and note the value it displays, in this case 10240 
+-   In the “Servo Configuration” section, select the “Mode” tab and enter those values for the “POSITION MAX_LIMIT” and “POSITION MIN_LIMIT” fields, press each of their corresponding [SET] buttons, press [SAVE] and finally reboot the servo by pressing the [SERVO RESET] (Reminder, it probably just says [SERVO] on your screen like above)
 
    .. image:: ../../../images/hitec-uavcan-servos-config4.png
        :width: 450px
 
--   In the “Servo Configuration” section, select the “Mode” tab and enter those values for the “POSITION MAX_LIMIT” and “POSITION MIN_LIMIT” fields, press each of their corresponding [SET] buttons, press [SAVE] and finally reboot the servo by pressing the [SERVO RESET] (Reminder, it probably just says [SERVO] on your screen like above)
--   When the servo reboots, use the left/right buttons under the word "Test" to command unitless values of -1.000 and +1.000 to validate that those values are giving -45 and +45 degrees of servo travel.  Using these left/right buttons simulate ArduPilot sending full-swing commands in unitless values of -1 to +1
+-   When the servo reboots, use the left/right buttons under the word "Test" to command unitless values of -1.000 and +1.000 to validate that those values are giving -45 and +45 degrees of servo travel.  Using these left/right buttons simulate ArduPilot sending full-swing commands in unitless values of -1 to +1.  Note: You may be required to update the "CAN ID" and "SERVO ID" under the DPC-CAN Configuration section of the app so that the app is now talking to the servo on its new Servo ID, as well as from CAN ID Node 10.
 
    .. image:: ../../../images/hitec-uavcan-servos-config6.png
        :width: 450px
 
+You can now move to ArduPilot Configuration.
+
 ArduPilot Configuration for UAVCAN Servos
 =========================================
 This procedure will cover AutoPilot configuration of the Hitec UAVCAN Servo.  This document is a continuation of the previous document and comes with the following assumptions:
--   AutoPilot will be NODE 10 on the UAVCAN Bus
+-   ArduPilot will be NODE 10 on the UAVCAN Bus
 -   Servo will be Servo 2, which is going to be configured as the Elevator servo
 -   The AutoPilot software in this document is ArduPlane 4.0.5
--   The AutoPilot hardware in this instance is a CUAV v5 Nano and we will be connected to CAN1
+-   The AutoPilot hardware in this instance is a CUAV v5 Nano and we will be connected to CAN1; any ArduPilot hardware with CAN broken out will be configured in functionally the same way
 
-All of the hardware AutoPilot devices currently supported in ArduPilot do not provide suitable power to the CAN ports.  Because of this, it is strongly recommended that integrators supply appropriate current to the UAVCAN servos outside of that bus.  Hitec has a collection of breakout boards to meet this demand and simplify wiring.  Do not forget to connect a bus termination resistor if you are not connecting any other devices.
+All of the hardware AutoPilot devices currently supported in ArduPilot do not provide suitable power to the CAN ports.  Because of this, it is required that you supply appropriate current to the UAVCAN servos outside of that bus.  Hitec has a collection of breakout boards to meet this demand and simplify wiring.  Do not forget to connect a bus termination resistor if you are not connecting any other devices.
 
 After connecting to ArduPilot, the following parameter changes are required:
 
@@ -179,13 +181,14 @@ Once CAN_P1_DRIVER is changed from 0 to 1, you will need to reboot the autopilot
 For ``CAN_D1_UC_SRV_BM`` you will need to know how to compute the bitmask for the servo you are using; This is an ArduPilot bitmask, not one for the servo itself.  It is telling ArduPilot to copy any PWM-OUT for the corresponding servos to the UAVCAN bus in the appropriate format.  Fortunately, Mission Planner makes this very easy with a pop-up once you click that value.  Since we’re wanting to make SERVO2 be UAVCAN, we’ll select that servo in this pop-up, close it, and press [Write Params]
 
 
-Next we’ll verify SERVO2_FUNCTION is configured to be our Elevator servo by setting it to 19 if it isn’t already, and pressing [Write Params]
-Optionally, we may want to run the servo at a rate higher than 50Hz.  Depending on which servo you have, you can configure CAN_D1_UC_SRV_RT to be a number greater than 50Hz. 
-Depending on the rest of your configuration, you may be able to configure the plane for FBWA or some other attitude-stabilizing mode, move the autopilot around and watch the servo actuate.
+Next verify ``SERVO2_FUNCTION`` is configured to be our Elevator servo by setting it to ``19`` if it isn’t already, and pressing [Write Params]
+Optionally, we may want to command the servo at a rate higher than 50Hz.  Depending on which servo you have, you can configure ``CAN_D1_UC_SRV_RT`` to be a number greater than 50Hz. Note that setting this value to a number higher than your system's looptime will have no impact.
+
+You can now proceed with the rest of your configuration and assuming power and configurations are all correct, be able to move the servo via RC Input or ground stabilization check (move the plane around in FBWA, for instance)
 
 Log Analysis
 ============
-Since we configured the servo to stream data at 50Hz, ArduPilot will be able to see this data and will log it at the stream rate you’ve configured.  To view this data, open your favorite dataflash viewer, open the log, and browse to CSRV:
+Since you've configured the servo to stream data at 50Hz, ArduPilot will be able to see this data and will log it at the stream rate you’ve configured.  To view this data, open your favorite dataflash viewer, open the log, and browse to CSRV:
  
 
    .. image:: ../../../images/hitec-uavcan-servos-csrv.jpg
