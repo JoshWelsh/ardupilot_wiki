@@ -29,15 +29,15 @@ For the purposes of this documentation, a `MD950TW-UAVCAN <https://hitecnology.c
 Current Hitec UAVCAN Servos Available
 =====================================
 
--  `MD950TW <https://hitecnology.com/actuators/md-series/md950mw-20mm-coreless-titanium-gear/product>`
--  `MD65MG <https://hitecnology.com/actuators/md-series/md65mg-12mm-stantard-composite-gear/product>`
--  `MD70MH <https://hitecnology.com/actuators/md-series/md70mh-12mm-standard-metal-gear/product>`
--  `MD85MG <https://hitecnology.com/actuators/md-series/hsi-m5085mg-industrial-grade-standard-servo/product>`
--  `MD245MW <https://hitecnology.com/actuators/md-series/md245mw-17mm-metal-gear-wmagnetic-encoder-servo-actuator/product>`
--  `MD250MW <https://hitecnology.com/actuators/md-series/md250mw-15mm-metal-gear-wmagnetic-encoder-servo-actuator/product>`
--  `MD89MW <https://hitecnology.com/actuators/md-series/d-89mw-32bit-ultra-torque-micro-servo/product>`
--  `SG33BLS/BLT <https://hitecnology.com/actuators/sg-series/sg33blt-xxxx-xxxx-servo/product>`
--  SG20GL (Coming Soon as of Aug 2020)
+-  `MD950TW <https://hitecnology.com/actuators/md-series/md950mw-20mm-coreless-titanium-gear/product>`_
+-  `MD65MG <https://hitecnology.com/actuators/md-series/md65mg-12mm-stantard-composite-gear/product>`_
+-  `MD70MH <https://hitecnology.com/actuators/md-series/md70mh-12mm-standard-metal-gear/product>`_
+-  `MD85MG <https://hitecnology.com/actuators/md-series/hsi-m5085mg-industrial-grade-standard-servo/product>`_
+-  `MD245MW <https://hitecnology.com/actuators/md-series/md245mw-17mm-metal-gear-wmagnetic-encoder-servo-actuator/product>`_
+-  `MD250MW <https://hitecnology.com/actuators/md-series/md250mw-15mm-metal-gear-wmagnetic-encoder-servo-actuator/product>`_
+-  `MD89MW <https://hitecnology.com/actuators/md-series/d-89mw-32bit-ultra-torque-micro-servo/product>`_
+-  `SG33BLS/BLT <https://hitecnology.com/actuators/sg-series/sg33blt-xxxx-xxxx-servo/product>`_
+-  SG20GL (Coming Soon , probably Aug 2020)
 
 
 Hitec DPC-CAN Adapter Node
@@ -118,12 +118,14 @@ Servo Configuration
        :width: 450px
 
 3.	In the “SERVO Configuration” area in the top right section of the app, press [All] to select all the check boxes on that tab, and press the [READ] button to read those values from the servo in to the app
-4.	The next step is to enter some configurations for this servo.  For the purposes of this exercise, this documentation assumes this servo will be “Servo 2” in ArduPilot.  It will also assume ArduPilot is on the bus as Node ID 10, which is ArduPilot's default UAVCAN configuration.  These instructions also assume you want a data stream rate of 50Hz but you can change this to suit your requirements. 
+4.	The next step is to enter some configurations for this servo.  For the purposes of this exercise, this documentation assumes this servo will be “Servo 2” in ArduPilot.  It will also assume ArduPilot is on the bus as Node ID 10, which is ArduPilot's default UAVCAN configuration.  These instructions also assume you want a data stream rate of 50Hz but you can change this to suit your requirements.
+
 -    Check the checkbox for CAN/Node ID, enter "10" in the text field, and press [SET] next to it
 -    Check the checkbox for SERVO ID, enter "2" in the text field (if you are configuring for a different servo number, this is where you set that value), and press [SET] next to it
 -    check the checkbox for Stream Mode, select the pull down to enable streaming, and press the [SET] button next to it
 -    check the checkbox for Stream Time[ms] and enter 20 (you can set this to whatever value works for your system, 20ms is 50hz logging rate), and press [SET] next to it
 -    press [Save]
+
    .. image:: ../../images/hitec-uavcan-servos-config2b.png
        :width: 450px
 
@@ -160,9 +162,8 @@ All of the hardware AutoPilot devices currently supported in ArduPilot do not pr
 
 After connecting to ArduPilot, the following parameter changes are required:
 
-``CAN_D1_PROTOCOL`` =1
-
-``CAN_P1_DRIVER`` =1
+- :ref:`CAN_D1_PROTOCOL<CAN_D1_PROTOCOL>` =1
+- :ref:`CAN_P1_DRIVER<CAN_P1_DRIVER>` =1
 
 Once CAN_P1_DRIVER is changed from 0 to 1, you will need to reboot the autopilot gain access to the rest of the CAN Parameters:
 
@@ -195,10 +196,12 @@ Since you've configured the servo to stream data at 50Hz, ArduPilot will be able
 
 
 Here is an example of RCOU.C2 (SERVO2’s PWM Value) mapped against CSRV[2].Pos
+
    .. image:: ../../../images/hitec-uavcan-servos-ardulog1.png
        :width: 450px
 
 Here is another sample where CSRV[2].Pos is plotted against CSRV[2].Force to show how randomly providing resistance to the servo while moving it using FBWA is logged:
+
    .. image:: ../../../images/hitec-uavcan-servos-ardulog2.png
        :width: 450px
 
